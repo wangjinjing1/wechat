@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APP_IMAGE:-wechat:local}
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-20935}:20935"
+    environment:
+      SERVER_PORT: 20935
+      APP_UPLOAD_DIR: /app/uploads
+      APP_AUTH_TOKEN_SECRET: ${APP_AUTH_TOKEN_SECRET:?set APP_AUTH_TOKEN_SECRET in .env}
+      MYSQL_HOST: ${MYSQL_HOST:-127.0.0.1}
+      MYSQL_PORT: ${MYSQL_PORT:-3306}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-we_chat}
+      MYSQL_USERNAME: ${MYSQL_USERNAME:-root}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
+      MYSQL_TIMEZONE: ${MYSQL_TIMEZONE:-Asia/Shanghai}
+      MYSQL_USE_SSL: ${MYSQL_USE_SSL:-false}
+    volumes:
+      - /home/app/files:/app/uploads
+

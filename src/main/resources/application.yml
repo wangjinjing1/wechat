@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: wechat
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:we_chat}?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=${MYSQL_TIMEZONE:Asia/Shanghai}&allowPublicKeyRetrieval=true&useSSL=${MYSQL_USE_SSL:false}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: ${MYSQL_DRIVER:com.mysql.cj.jdbc.Driver}
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 25MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+
+server:
+  port: ${SERVER_PORT:20935}
+
+app:
+  auth:
+    token-secret: ${APP_AUTH_TOKEN_SECRET:wechat-dev-token-secret-change-me}
+  storage:
+    upload-dir: /app/uploads
+    chat-cleanup-cron: ${APP_CHAT_CLEANUP_CRON:0 0 * * * *}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

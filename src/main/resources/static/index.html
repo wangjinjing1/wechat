@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeChat</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div class="page">
+    <section id="auth-panel" class="auth-layout">
+        <div class="hero-card">
+            <p class="eyebrow">WeChat</p>
+            <h1>在线聊天</h1>
+            <p>支持注册登录、公共大厅、好友私聊、群聊、表情、文件、头像、未读数和实时消息推送。</p>
+        </div>
+        <div class="auth-card">
+            <div class="tabs">
+                <button id="login-tab" class="tab active">登录</button>
+                <button id="register-tab" class="tab">注册</button>
+            </div>
+            <form id="login-form" class="form-grid">
+                <input name="username" placeholder="用户名" required>
+                <input name="password" type="password" placeholder="密码" required>
+                <button type="submit">进入聊天</button>
+            </form>
+            <form id="register-form" class="form-grid hidden">
+                <input name="username" placeholder="用户名，3-20 位小写字母/数字/_" required>
+                <input name="displayName" placeholder="昵称">
+                <input name="password" type="password" placeholder="密码，至少 4 位" required>
+                <button type="submit">创建账号</button>
+            </form>
+            <p id="auth-message" class="hint"></p>
+        </div>
+    </section>
+
+    <section id="chat-app" class="app-layout hidden">
+        <aside class="sidebar">
+            <div class="panel profile-panel">
+                <div class="profile-top">
+                    <div id="me-avatar" class="avatar avatar-lg"></div>
+                    <div>
+                        <h2 id="me-name">-</h2>
+                        <p id="me-username" class="muted"></p>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <label class="upload-inline">
+                        <input id="avatar-input" type="file" accept="image/*">
+                        <span>上传头像</span>
+                    </label>
+                    <details class="settings-panel">
+                        <summary>系统设置</summary>
+                        <form id="password-form" class="form-grid compact">
+                            <input name="currentPassword" type="password" placeholder="当前密码" required>
+                            <input name="newPassword" type="password" placeholder="新密码" required>
+                            <input name="confirmPassword" type="password" placeholder="确认新密码" required>
+                            <button type="submit">修改密码</button>
+                        </form>
+                    </details>
+                    <button id="logout-btn" class="ghost-btn" type="button">退出登录</button>
+                </div>
+            </div>
+
+            <div class="sidebar-scroll">
+                <details class="panel sidebar-section" open>
+                    <summary class="section-head">
+                        <h3>会话</h3>
+                        <div class="section-head-actions">
+                            <button id="open-group-modal-btn" class="mini-btn" type="button">创建群聊</button>
+                            <span id="ws-status" class="status-dot offline">离线</span>
+                        </div>
+                    </summary>
+                    <input id="conversation-search" class="search-input" type="search" placeholder="搜索会话">
+                    <div id="conversation-list" class="stack-list"></div>
+                    <button id="conversation-load-more" class="mini-btn load-more-btn hidden" type="button">加载更多</button>
+                </details>
+
+                <details class="panel sidebar-section" open>
+                    <summary class="section-head">
+                        <h3>全部用户</h3>
+                        <div class="section-head-actions">
+                            <button id="refresh-btn" class="mini-btn" type="button">刷新</button>
+                        </div>
+                    </summary>
+                    <input id="user-search" class="search-input" type="search" placeholder="搜索用户">
+                    <div id="user-list" class="stack-list"></div>
+                    <button id="user-load-more" class="mini-btn load-more-btn hidden" type="button">加载更多</button>
+                </details>
+
+                <details class="panel sidebar-section" open>
+                    <summary class="section-head">
+                        <h3>好友申请</h3>
+                        <span class="muted">点击折叠</span>
+                    </summary>
+                    <input id="friend-request-search" class="search-input" type="search" placeholder="搜索好友申请">
+                    <div id="friend-request-list" class="stack-list"></div>
+                    <button id="friend-request-load-more" class="mini-btn load-more-btn hidden" type="button">加载更多</button>
+                </details>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="panel main-header">
+                <div class="header-main">
+                    <div id="conversation-avatar" class="avatar avatar-lg"></div>
+                    <div>
+                        <p class="eyebrow">当前会话</p>
+                        <h2 id="conversation-title">聊天大厅</h2>
+                        <p id="conversation-subtitle" class="muted">所有用户都可见</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="friend-remark-btn" class="mini-btn hidden" type="button">设置备注</button>
+                    <button id="remove-friend-btn" class="mini-btn danger-btn hidden" type="button">删除好友</button>
+                    <button id="view-members-btn" class="mini-btn hidden" type="button">查看成员</button>
+                    <button id="clear-chat-btn" class="mini-btn" type="button">清空当前聊天</button>
+                </div>
+                <div class="emoji-strip">
+                    <button class="emoji-btn" data-emoji="😀">😀</button>
+                    <button class="emoji-btn" data-emoji="🎉">🎉</button>
+                    <button class="emoji-btn" data-emoji="👍">👍</button>
+                    <button class="emoji-btn" data-emoji="❤️">❤️</button>
+                    <button class="emoji-btn" data-emoji="😶">😶</button>
+                </div>
+            </header>
+
+            <section id="group-panel" class="panel hidden"></section>
+
+            <section id="messages" class="panel messages"></section>
+
+            <footer class="panel composer">
+                <form id="message-form" class="form-grid compact">
+                    <textarea id="message-input" placeholder="输入消息，回车发送，Shift+Enter 换行" required></textarea>
+                    <div class="composer-actions">
+                        <label class="upload-inline">
+                            <input id="file-input" type="file">
+                            <span>发送文件</span>
+                        </label>
+                        <button type="submit">发送</button>
+                    </div>
+                </form>
+                <p id="chat-message" class="hint"></p>
+            </footer>
+        </main>
+    </section>
+</div>
+
+<div id="group-modal" class="image-viewer hidden" aria-hidden="true">
+    <div id="group-modal-backdrop" class="image-viewer-backdrop"></div>
+    <div class="image-viewer-dialog member-viewer-dialog" role="dialog" aria-modal="true" aria-label="创建群聊">
+        <button id="group-modal-close" class="image-viewer-close" type="button">×</button>
+        <div class="section-head member-viewer-head">
+            <h3>创建群聊</h3>
+        </div>
+        <form id="group-form" class="form-grid compact">
+            <input name="name" placeholder="群名称" required>
+            <input name="members" placeholder="成员用户名，逗号分隔">
+            <button type="submit">建群</button>
+        </form>
+    </div>
+</div>
+
+<div id="image-viewer" class="image-viewer hidden" aria-hidden="true">
+    <div id="image-viewer-backdrop" class="image-viewer-backdrop"></div>
+    <div class="image-viewer-dialog" role="dialog" aria-modal="true" aria-label="图片预览">
+        <button id="image-viewer-close" class="image-viewer-close" type="button">×</button>
+        <img id="image-viewer-image" class="image-viewer-image" alt="图片预览">
+        <p id="image-viewer-caption" class="image-viewer-caption"></p>
+    </div>
+</div>
+
+<div id="member-viewer" class="image-viewer hidden" aria-hidden="true">
+    <div id="member-viewer-backdrop" class="image-viewer-backdrop"></div>
+    <div class="image-viewer-dialog member-viewer-dialog" role="dialog" aria-modal="true" aria-label="群成员">
+        <button id="member-viewer-close" class="image-viewer-close" type="button">×</button>
+        <div class="section-head member-viewer-head">
+            <h3 id="member-viewer-title">群成员</h3>
+            <span id="member-viewer-count" class="muted"></span>
+        </div>
+        <input id="group-member-search" class="search-input" type="search" placeholder="搜索群成员">
+        <form id="member-viewer-form" class="form-grid compact hidden">
+            <input name="username" placeholder="输入用户名添加群成员">
+            <button type="submit">添加成员</button>
+        </form>
+        <div id="member-viewer-list" class="stack-list member-viewer-list"></div>
+        <button id="member-load-more" class="mini-btn load-more-btn hidden" type="button">加载更多</button>
+    </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
