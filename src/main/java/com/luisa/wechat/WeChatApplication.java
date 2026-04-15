@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan("com.luisa.wechat.chat.persistence")
+@MapperScan("com.luisa.wechat.chat.mapper")
 @EnableScheduling
 public class WeChatApplication {
 

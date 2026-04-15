@@ -1,7 +1,7 @@
 package com.luisa.wechat.chat.security;
 
-import com.luisa.wechat.chat.persistence.UserMapper;
-import com.luisa.wechat.chat.persistence.model.UserRecord;
+import com.luisa.wechat.chat.mapper.UserMapper;
+import com.luisa.wechat.chat.model.entity.UserRecord;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
